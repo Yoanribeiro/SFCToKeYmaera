@@ -17,3 +17,10 @@ The figure illustrates how the tool actually works, it begins by parsing the XML
 
 Please if you detect any bug or incoherence in the program feel free to make a pull request!
 
+# How it works
+Having the Haskell platform installed, in the terminal type:
+
+```Shell
+runhaskell parserSFC.hs src
+```
+*src* is the path of the XML file with the SFC code. The generated .key file will be in the same directory as the *parserSFC* file 
