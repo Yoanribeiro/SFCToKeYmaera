@@ -5,9 +5,10 @@ This tool is a result of my MSc dissertation entitled "Validation of IEC 61131-3
 
 ![alt tag](http://i21.servimg.com/u/f21/12/93/70/88/sdfdsg10.png)
 
-The figure illustrates how the tool actually works, it begins by parsing the XML given by Beremiz and stores the result in a structure called SFC HXT. 
+The figure illustrates how the tool actually works, 
 
-1. This first part was made with the HXT library to parse and input file, hence the name of the structure. 
+1. It begins by parsing the XML given by Beremiz and stores the result in a structure called SFC HXT. 
+This first part was made with the [HXT](https://wiki.haskell.org/HXT) library to parse and input file, hence the name of the structure. 
 
 2. The next step in the diagram is the translation of the SFC HXT to the [SFC+ formal](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.8276&rep=rep1&type=pdf), the "+" is introduced by the dissertation to upgrade the language and make the annotation of the dynamics of the system possible, and consequently the annotation of other details.
 
@@ -18,9 +19,27 @@ The figure illustrates how the tool actually works, it begins by parsing the XML
 Please if you detect any bug or incoherence in the program feel free to make a pull request!
 
 # How it works
-Having the Haskell platform installed, in the terminal type:
+
+Firstly, you will have to code a SFC program in Beremiz IDE and annotate it. Note that the SFC that is accepted by the tool in merely a subset of the language, namely:
+
+- The types accepted by the tool are: **INTEGER**, **REAL** and **BOOLEAN** the others will be ignored;
+- The only type of variables stored are the input, local and output variables;
+- The step actions are coded in ST assignments;
+- The conditions of the transtition are coded in ST conditions;
+
+There are 5 types of annotations:
+
+- *CODE annotation*: Where the dynamics of the step are annotated e.g "@step->ODE1:Cond1;ODE2,ODE2.1:Cond2\n@step1->ODE11:Cond11"
+- *initAnnotation*: Where the precondition of the program is presented e.g "@initCond:Cond".
+- *invariantAnnotation*: Where the invariant of the program is presented e.g "@invariant:Cond".
+- *toProveAnnotation*: Where the prostcondition of the program is presented e.g "@toProveCond:Cond".
+- *ExtrasAnnotation*: The condition which once the program is translated it is not useful for the hybrid program is then traded by one that is actually useful. e.g "@Extras:\nCondToReplace:NewCond\n".
+
+Then, having the Haskell platform installed, in the terminal type:
 
 ```Shell
 runhaskell parserSFC.hs src
 ```
-*src* is the path of the XML file with the SFC code. The generated .key file will be in the same directory as the *parserSFC* file 
+*src* is the path of the XML file with the SFC code. The generated .key file will be in the same directory of the *parserSFC* file.
+
+
