@@ -4,7 +4,7 @@ A tool, coded in Haskell, to translate the XML representation of Sequential Func
 This tool is a result of my MSc dissertation entitled "Validation of IEC 61131-3 Programmable Logical Controllers in KeYmaera". The main goal of the dissertation is to use KeYmaera as a tool to validate safety proprieties about a PLC program. This dissertations focused on the SFC language and the overall process of how to convert SFC to a hybrid program.
 
 <p align="center">
-  <img src="http://i21.servimg.com/u/f21/12/93/70/88/sdfdsg11.png">
+  <img src="http://i21.servimg.com/u/f21/12/93/70/88/sfctok11.png">
 </p>
 
 The figure illustrates how the tool actually works, 
