@@ -126,7 +126,7 @@ keymaeraPrintFlowsWithInv f i = let diff = (snd .unFlow) f
 keymaeraPrintEdges :: [Edge] -> HybridAutomaton -> String
 keymaeraPrintEdges [] ha = "!!"
 keymaeraPrintEdges [e] ha = keymaeraPrintEdge e ha
-keymaeraPrintEdges (e:es) ha = keymaeraPrintEdge e ha ++
+keymaeraPrintEdges (e:es) ha = "(" ++ keymaeraPrintEdge e ha ++ ")"++
                                "\t\t\t\t\t\t\t\t++\n" ++
                                keymaeraPrintEdges es ha   
 

@@ -181,7 +181,7 @@ genEdgesFromStep ts as s = let acts = filter ((==s). fst . snd . snd . unAction)
 genLoopEdge :: Step -> [Transition] -> [Action] -> Edge
 genLoopEdge s ts doT = let acts = filter ((==s).fst.snd.snd.unAction) doT
                            auxTs = filter ((==s).fst.fst.snd.unTransition) ts
-                           toAddActions = foldr (\x b -> if b == "" then x ++ b else x ++ ";" ++ b) "" (map (getAction) acts) 
+                           toAddActions = foldr (\x b -> if b == "" then x ++ b else x ++ ";" ++ b) "" (map (getAction) acts ++ ["t:=0;"] ) 
                            src = genLoc s
                            dest = genLoc s
                            condsNeg = map (negCond.getTransCond) auxTs
@@ -201,7 +201,7 @@ genEdges (t:ts) entry doT exit = let src = (fst . fst .snd.unTransition) t
                                
 genEdge :: Step -> Step -> String -> [String] -> [Action] -> [Action] -> [Action] -> Edge
 genEdge src dest cond condsNeg exit entry doT = let toAddCond = foldr (\x b -> if b == "" then x ++ b else x ++ "&" ++ b) "" condsNeg
-                                                    toAddActions = foldr (\x b -> if b == "" then x ++ b else x ++ b) "" (map (getAction) (exit ++ entry ++ doT)) 
+                                                    toAddActions = foldr (\x b -> if b == "" then x ++ b else x ++ b) "" ((map (getAction) (exit ++ entry ++ doT))++ ["t:=0;"]) 
                                                     locSrc = genLoc src
                                                     locDest = genLoc dest
                                                     condRes = if toAddCond == [] then cond else cond ++ "&" ++ toAddCond
