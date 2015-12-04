@@ -39,6 +39,7 @@ data BExp =
      | OrForm BExp BExp
      | ImplForm BExp BExp
      | EquiForm BExp BExp
+     | InParen BExp
       deriving (Eq, Show)
 
 type NameStep = String
@@ -56,6 +57,7 @@ prettyprintExp (EExp e1 e2) = prettyprintExp e1 ++ "^" ++ prettyprintExp e2
 
 prettyprintBExp :: BExp -> String
 prettyprintBExp (Formula e) = prettyprintExp e
+prettyprintBExp (InParen e) = "("++ prettyprintBExp e ++ ")"
 prettyprintBExp (EqFormula e1 e2) = prettyprintExp e1 ++ "=" ++ prettyprintExp e2
 prettyprintBExp (NEqFormula e1 e2) = prettyprintExp e1 ++ "=" ++ prettyprintExp e2
 prettyprintBExp (LeFormula e1 e2) = prettyprintExp e1 ++ "<" ++ prettyprintExp e2
@@ -67,6 +69,7 @@ prettyprintBExp (AndForm e1 e2) = prettyprintBExp e1 ++ "&" ++ prettyprintBExp e
 prettyprintBExp (OrForm e1 e2) = prettyprintBExp e1 ++ "|" ++ prettyprintBExp e2
 prettyprintBExp (ImplForm e1 e2) = prettyprintBExp e1 ++ "->" ++ prettyprintBExp e2
 prettyprintBExp (EquiForm e1 e2) = prettyprintBExp e1 ++ "<->" ++ prettyprintBExp e2
+
 
 unEVar :: Exp -> String
 unEVar (EVar e) = e
@@ -149,13 +152,20 @@ pExp = buildExpressionParser opList pExpAtom
 pBExp :: Parsec String [Exp] BExp
 pBExp = buildExpressionParser opList pBExpAtom
   where
-    pBExpAtom = pExp >>= 
+    pBExpAtom = (pExp >>= 
                 \e -> (   (fmap (EqFormula e)  $ reservedOp "="  *> pExp) 
                       <|> (fmap (LeFormula e)  $ reservedOp "<"  *> pExp)
                       <|> (fmap (LeqFormula e) $ reservedOp "<=" *> pExp)
                       <|> (fmap (GeFormula e)  $ reservedOp ">"  *> pExp)
                       <|> (fmap (GeqFormula e) $ reservedOp ">=" *> pExp)
-                      <|> (fmap (NEqFormula e) $ reservedOp "!=" *> pExp))  
+                      <|> (fmap (NEqFormula e) $ reservedOp "!=" *> pExp)))
+                <|>
+                (do
+                  string "(";
+                  e <- pBExp
+                  string ")";
+                  return (InParen e)
+                )
     
     opList  = [ [ prefix "!"  (NotForm) 
                 , binary "&&" (AndForm) AssocLeft 
